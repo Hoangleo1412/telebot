@@ -6,16 +6,19 @@ module.exports = async (req, res) => {
   }
 
   const body = req.body;
-  const chat_id = body.message?.chat?.id;
-  const caption = body.message?.caption || '';
-  const photos = body.message?.photo;
+  console.log("Incoming Telegram data:", JSON.stringify(body, null, 2));
+
+  const message = body.message;
+  const chat_id = message?.chat?.id;
+  const caption = message?.caption || '';
+  const photos = message?.photo;
   const file_id = photos ? photos[photos.length - 1].file_id : null;
 
   if (!chat_id || !file_id) {
     return res.status(400).send('Missing data');
   }
 
-  // Default to Gemini
+  // Default model logic (can be enhanced later)
   const model = caption.toLowerCase().includes('[gpt]') ? 'gpt' : 'gemini';
 
   try {
